@@ -2,6 +2,13 @@
 
 This project contains an AWS Lambda maven application with [AWS Java SDK 2.x](https://github.com/aws/aws-sdk-java-v2) dependencies.
 
+This example shows how to use
+
+- GetObjectAsBytes()
+- GetObjectMetadata()
+
+SDK API calls with MinIO
+
 ## Prerequisites
 - Java 1.8+
 - Apache Maven
