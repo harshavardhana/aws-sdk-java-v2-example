@@ -11,8 +11,10 @@ import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 
 import java.net.URI;
 import java.io.File;
@@ -62,8 +64,25 @@ public class GetObjectData {
             .region(region)
             .build();
 
-        getObjectBytes(s3,bucketName,keyName, path);
+        getObjectBytes(s3, bucketName, keyName, path);
         s3.close();
+        printObjectMeta(s3, bucketName, keyName);
+    }
+
+    public static void printObjectMeta (S3Client s3, String bucketName, String keyName) {
+        try {
+            HeadObjectRequest objectRequest = HeadObjectRequest
+                    .builder()
+                    .key(keyName)
+                    .bucket(bucketName)
+                    .build();
+            HeadObjectResponse response = s3.headObject(objectRequest);
+            System.out.println("Content-Type: " + response.contentType());
+            System.out.println("ETag: "+ response.eTag());
+        } catch (S3Exception e) {
+            System.err.println(e.awsErrorDetails().errorMessage());
+            System.exit(1);
+        }
     }
 
     public static void getObjectBytes (S3Client s3, String bucketName, String keyName, String path ) {
@@ -88,8 +107,8 @@ public class GetObjectData {
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (S3Exception e) {
-          System.err.println(e.awsErrorDetails().errorMessage());
-           System.exit(1);
+            System.err.println(e.awsErrorDetails().errorMessage());
+            System.exit(1);
         }
     }
 }
